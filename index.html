@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LexHispana | Plataforma Jurídica</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { font-family: Arial; background:#f4f4f4; margin:0 }
+header { background:#1e2a38; color:white; padding:15px; text-align:center }
+section { padding:20px }
+.card { background:white; padding:15px; border-radius:6px; margin-bottom:15px }
+button { padding:10px; background:#1e2a38; color:white; border:none; border-radius:4px }
+input, select { width:100%; padding:8px; margin:6px 0 }
+.hidden { display:none }
+.admin { background:#fff3cd }
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>⚖️ LexHispana</h2>
+<p>Información jurídica de Argentina y países hispanohablantes</p>
+</header>
+
+<section id="login">
+<div class="card">
+<h3>Ingreso / Registro</h3>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Contraseña">
+<select id="rama">
+<option value="penal">Derecho Penal</option>
+<option value="laboral">Derecho Laboral</option>
+<option value="civil">Derecho Civil</option>
+<option value="comercial">Derecho Comercial</option>
+</select>
+<button onclick="login()">Ingresar</button>
+<p>🎁 Prueba gratuita 7 días – USD 5/mes luego</p>
+</div>
+</section>
+
+<section id="app" class="hidden">
+<div class="card">
+<h3>📚 Contenido Jurídico</h3>
+<p><b>Rama:</b> <span id="ramaActiva"></span></p>
+
+<ul>
+<li>📄 Fallos relevantes actualizados</li>
+<li>📰 Noticias jurídicas diarias</li>
+<li>📘 Artículos doctrinarios</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>🔍 Buscar en Boletín Oficial</h3>
+<input id="buscar" placeholder="Palabra clave (ej: despido)">
+<button onclick="buscarBoletin()">Buscar</button>
+<div id="resultado"></div>
+</div>
+
+<button onclick="logout()">Cerrar sesión</button>
+</section>
+
+<section id="admin" class="hidden admin">
+<div class="card">
+<h3>🛠 Panel Administrador</h3>
+
+<h4>👤 Otorgar acceso premium gratis</h4>
+<input placeholder="Email usuario">
+<button>Activar Premium</button>
+
+<h4>💳 Configurar cuenta de cobro</h4>
+<input placeholder="Proveedor (Stripe / MercadoPago)">
+<input placeholder="ID de cuenta">
+<button>Guardar</button>
+
+<h4>📊 Métricas</h4>
+<ul>
+<li>Usuarios activos</li>
+<li>Suscriptores pagos</li>
+<li>Trials activos</li>
+</ul>
+
+</div>
+</section>
+
+<script>
+const ADMIN_EMAIL = "ADMIN_EMAIL_PLACEHOLDER";
+
+function login(){
+  const email = document.getElementById("email").value;
+  const rama = document.getElementById("rama").value;
+
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("ramaActiva").innerText = rama.toUpperCase();
+
+  if(email === ADMIN_EMAIL){
+    document.getElementById("admin").classList.remove("hidden");
+  }
+}
+
+function buscarBoletin(){
+  const palabra = document.getElementById("buscar").value;
+  document.getElementById("resultado").innerHTML =
+    "Resultados encontrados para: <b>" + palabra + "</b><br>- Resolución 123/2025<br>- Decreto 45/2024";
+}
+
+function logout(){
+  location.reload();
+}
+</script>
+
+</body>
+</html>
