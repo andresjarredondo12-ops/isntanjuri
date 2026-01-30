@@ -4,15 +4,18 @@
 <meta charset="UTF-8">
 <title>LexHispana | Plataforma Jurídica</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
-body { font-family: Arial; background:#f4f4f4; margin:0 }
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0 }
 header { background:#1e2a38; color:white; padding:15px; text-align:center }
 section { padding:20px }
 .card { background:white; padding:15px; border-radius:6px; margin-bottom:15px }
-button { padding:10px; background:#1e2a38; color:white; border:none; border-radius:4px }
+button { padding:10px; background:#1e2a38; color:white; border:none; border-radius:4px; cursor:pointer }
 input, select { width:100%; padding:8px; margin:6px 0 }
 .hidden { display:none }
 .admin { background:#fff3cd }
+.highlight { background: yellow; font-weight: bold }
+.resultado { white-space: pre-wrap; line-height:1.5 }
 </style>
 </head>
 
@@ -20,7 +23,7 @@ input, select { width:100%; padding:8px; margin:6px 0 }
 
 <header>
 <h2>⚖️ LexHispana</h2>
-<p>Información jurídica de Argentina y países hispanohablantes</p>
+<p>Información jurídica de Argentina y países de habla hispana</p>
 </header>
 
 <section id="login">
@@ -42,20 +45,21 @@ input, select { width:100%; padding:8px; margin:6px 0 }
 <section id="app" class="hidden">
 <div class="card">
 <h3>📚 Contenido Jurídico</h3>
-<p><b>Rama:</b> <span id="ramaActiva"></span></p>
-
+<p><b>Rama activa:</b> <span id="ramaActiva"></span></p>
 <ul>
-<li>📄 Fallos relevantes actualizados</li>
-<li>📰 Noticias jurídicas diarias</li>
+<li>📄 Fallos judiciales relevantes</li>
+<li>📰 Noticias jurídicas actualizadas</li>
 <li>📘 Artículos doctrinarios</li>
 </ul>
 </div>
 
 <div class="card">
 <h3>🔍 Buscar en Boletín Oficial</h3>
-<input id="buscar" placeholder="Palabra clave (ej: despido)">
+<input id="buscar" placeholder="Palabra o frase (ej: despido sin causa)">
 <button onclick="buscarBoletin()">Buscar</button>
-<div id="resultado"></div>
+
+<p id="contador"></p>
+<div id="resultado" class="resultado"></div>
 </div>
 
 <button onclick="logout()">Cerrar sesión</button>
@@ -65,8 +69,8 @@ input, select { width:100%; padding:8px; margin:6px 0 }
 <div class="card">
 <h3>🛠 Panel Administrador</h3>
 
-<h4>👤 Otorgar acceso premium gratis</h4>
-<input placeholder="Email usuario">
+<h4>👤 Dar acceso premium gratuito</h4>
+<input placeholder="Email del usuario">
 <button>Activar Premium</button>
 
 <h4>💳 Configurar cuenta de cobro</h4>
@@ -74,18 +78,30 @@ input, select { width:100%; padding:8px; margin:6px 0 }
 <input placeholder="ID de cuenta">
 <button>Guardar</button>
 
-<h4>📊 Métricas</h4>
+<h4>📊 Panel de métricas</h4>
 <ul>
-<li>Usuarios activos</li>
-<li>Suscriptores pagos</li>
-<li>Trials activos</li>
+<li>Usuarios registrados</li>
+<li>Suscripciones activas</li>
+<li>Pruebas gratuitas en curso</li>
 </ul>
-
 </div>
 </section>
 
 <script>
 const ADMIN_EMAIL = "ADMIN_EMAIL_PLACEHOLDER";
+
+/* Texto completo simulado del Boletín Oficial */
+const boletinTexto = `
+El Ministerio de Trabajo informa que, en los casos de despido sin causa,
+el empleador deberá abonar la indemnización correspondiente conforme
+a lo establecido en la Ley de Contrato de Trabajo.
+
+Asimismo, se recuerda que el despido sin causa no podrá realizarse
+cuando el trabajador se encuentre bajo protección especial.
+
+La presente resolución será de aplicación inmediata a partir de su
+publicación en el Boletín Oficial de la República Argentina.
+`;
 
 function login(){
   const email = document.getElementById("email").value;
@@ -101,9 +117,19 @@ function login(){
 }
 
 function buscarBoletin(){
-  const palabra = document.getElementById("buscar").value;
-  document.getElementById("resultado").innerHTML =
-    "Resultados encontrados para: <b>" + palabra + "</b><br>- Resolución 123/2025<br>- Decreto 45/2024";
+  const busqueda = document.getElementById("buscar").value.trim();
+  if(busqueda === "") return;
+
+  const regex = new RegExp(`(${busqueda})`, "gi");
+  const coincidencias = boletinTexto.match(regex);
+
+  let textoMarcado = boletinTexto.replace(regex, `<span class="highlight">$1</span>`);
+
+  document.getElementById("resultado").innerHTML = textoMarcado;
+  document.getElementById("contador").innerHTML =
+    coincidencias
+      ? `🔎 Se encontraron <b>${coincidencias.length}</b> coincidencias`
+      : `❌ No se encontraron coincidencias`;
 }
 
 function logout(){
@@ -113,3 +139,5 @@ function logout(){
 
 </body>
 </html>
+
+
